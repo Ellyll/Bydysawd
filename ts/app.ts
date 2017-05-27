@@ -9,15 +9,13 @@ namespace Bydysawd {
             const context = canvas.getContext("2d");
             const lliniadydd = new Lliniadydd(context);
 
-            let endidauCychwyn = FfatriEndidau.CreuArHap(200, 0, 0, 500, 500);
-                            //.map(e => new Endid(e.lleoliad.x, e.lleoliad.y, e.cyflymder.x, e.cyflymder.y, "FFFFFF"))
+            let endidauCychwyn = FfatriEndidau.CreuArHap(10, 0, 0, 500, 500);
 
             let amserHen = performance.now();
             let niferFframiau = 0;
             const lluniadu = (amserRwan, amserHen, endidau) => {
                 niferFframiau++;
                 let gwahaniaeth = amserRwan - amserHen;
-                //console.log(gwahaniaeth);
 
                 while (gwahaniaeth > 128) {
                     const eiliadau = 128/1000;
@@ -28,7 +26,7 @@ namespace Bydysawd {
 
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 lliniadydd.LluniaduEndidau(endidau);
-                if (niferFframiau % 100 === 0) console.log(`Nifer fframiau: ${niferFframiau}`);
+                //if (niferFframiau % 1000 === 0) console.log(`Nifer fframiau: ${niferFframiau}`, endidau.map(e => e.cyflymder.toString()));
                 if (endidau.length > 0) {
                     const amserDiwethaf = amserRwan;
                     window.requestAnimationFrame((rwan) => lluniadu(rwan, amserDiwethaf, endidau));
@@ -48,19 +46,13 @@ namespace Bydysawd {
             // Symdu
             .map( e => {
                 const lleoliadNewydd = e.lleoliad.ychwanegu(e.cyflymder.lluosi(eiliadau))
-                //return e.gydaLleoliad(lleoliadNewydd);
-                const x = e.lleoliad.x + (e.cyflymder.x * eiliadau);
-                const y = e.lleoliad.y + (e.cyflymder.y * eiliadau);
 
-                if (endidau.every(e2 => {
-                    if (e2 === e) return true;
-                    return (lleoliadNewydd.pellterI(e2.lleoliad) >= 1);
-                })) {
-                    return e.gydaLleoliad(lleoliadNewydd); //new Endid(x, y, e.cyflymder.x, e.cyflymder.y, e.lliw);
+                if (endidau.every(e2 => e2 === e ? true : lleoliadNewydd.pellterI(e2.lleoliad) >= 1)) {
+                     return e.gydaLleoliad(lleoliadNewydd);
                 }
                 return e;
             })
-            // Gwaredu o endidau sydd allan o ffiniau
+            // Gwaredu endidau sydd allan o ffiniau
             .filter(e => e.lleoliad.x >= 0 && e.lleoliad.x < context.canvas.width && e.lleoliad.y >= 0 && e.lleoliad.y < context.canvas.height);
 
         for (let i=0 ; i<endidau.length-1 ; i++) {

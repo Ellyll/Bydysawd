@@ -9,6 +9,9 @@ var Bydysawd;
         get x() { return this._data[0]; }
         get y() { return this._data[1]; }
         get length() { return 2; }
+        toString() {
+            return `(${this.x},${this.y})`;
+        }
         // Dot product
         dot(fector) {
             return this.x * fector.x + this.y * fector.y;
@@ -81,9 +84,9 @@ var Bydysawd;
             for (let i = 0; i < nifer; i++) {
                 const x = FfatriEndidau.NolIntArHap(isafswmX, uchafswmX);
                 const y = FfatriEndidau.NolIntArHap(isafswmY, uchafswmY);
-                const cyflymderX = 0; //FfatriEndidau.NolArHap(-10,10);
-                const cyflymderY = 0; //FfatriEndidau.NolArHap(-10,10);
-                const mas = 100; // (5.97237*Math.pow(10,24));
+                const cyflymderX = FfatriEndidau.NolArHap(-10, 10);
+                const cyflymderY = FfatriEndidau.NolArHap(-10, 10);
+                const mas = 150; //(5.97237*Math.pow(10,24));
                 const pwynt = new Bydysawd.Endid(x, y, cyflymderX, cyflymderY, mas, 'FFFFFF');
                 endidau.push(pwynt);
             }
@@ -146,14 +149,12 @@ var Bydysawd;
             const canvas = document.getElementById("canvas");
             const context = canvas.getContext("2d");
             const lliniadydd = new Bydysawd.Lliniadydd(context);
-            let endidauCychwyn = Bydysawd.FfatriEndidau.CreuArHap(200, 0, 0, 500, 500);
-            //.map(e => new Endid(e.lleoliad.x, e.lleoliad.y, e.cyflymder.x, e.cyflymder.y, "FFFFFF"))
+            let endidauCychwyn = Bydysawd.FfatriEndidau.CreuArHap(10, 0, 0, 500, 500);
             let amserHen = performance.now();
             let niferFframiau = 0;
             const lluniadu = (amserRwan, amserHen, endidau) => {
                 niferFframiau++;
                 let gwahaniaeth = amserRwan - amserHen;
-                //console.log(gwahaniaeth);
                 while (gwahaniaeth > 128) {
                     const eiliadau = 128 / 1000;
                     endidau = diweddaru(context, endidau, eiliadau);
@@ -162,8 +163,7 @@ var Bydysawd;
                 endidau = diweddaru(context, endidau, gwahaniaeth / 1000);
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 lliniadydd.LluniaduEndidau(endidau);
-                if (niferFframiau % 100 === 0)
-                    console.log(`Nifer fframiau: ${niferFframiau}`);
+                //if (niferFframiau % 1000 === 0) console.log(`Nifer fframiau: ${niferFframiau}`, endidau.map(e => e.cyflymder.toString()));
                 if (endidau.length > 0) {
                     const amserDiwethaf = amserRwan;
                     window.requestAnimationFrame((rwan) => lluniadu(rwan, amserDiwethaf, endidau));
@@ -181,15 +181,8 @@ var Bydysawd;
         endidau = endidau
             .map(e => {
             const lleoliadNewydd = e.lleoliad.ychwanegu(e.cyflymder.lluosi(eiliadau));
-            //return e.gydaLleoliad(lleoliadNewydd);
-            const x = e.lleoliad.x + (e.cyflymder.x * eiliadau);
-            const y = e.lleoliad.y + (e.cyflymder.y * eiliadau);
-            if (endidau.every(e2 => {
-                if (e2 === e)
-                    return true;
-                return (lleoliadNewydd.pellterI(e2.lleoliad) >= 1);
-            })) {
-                return e.gydaLleoliad(lleoliadNewydd); //new Endid(x, y, e.cyflymder.x, e.cyflymder.y, e.lliw);
+            if (endidau.every(e2 => e2 === e ? true : lleoliadNewydd.pellterI(e2.lleoliad) >= 1)) {
+                return e.gydaLleoliad(lleoliadNewydd);
             }
             return e;
         })
@@ -250,8 +243,8 @@ var Bydysawd;
 (function (Bydysawd) {
     class Disgyrchiant {
         static gweithreduDisgyrchiant(endidau, eiliadau) {
-            const cyflymderIsaf = -10.0;
-            const cyflymderUchaf = 10.0;
+            const cyflymderIsaf = -30.0;
+            const cyflymderUchaf = 30.0;
             // Disgyrchiant
             const endidauNewydd = endidau.slice();
             for (let i = 0; i < endidauNewydd.length; i++) {
@@ -268,25 +261,18 @@ var Bydysawd;
                         .map(n => Disgyrchiant.clampio(n, cyflymderIsaf, cyflymderUchaf));
                     endidauNewydd[i] = e1.gydaCyflymder(cyflymderE1);
                     endidauNewydd[j] = e2.gydaCyflymder(cyflymderE2);
-                    //endidauNewydd[i] = new Endid(e1.lleoliad.x, e1.lleoliad.y, e1.cyflymder.x + cyflymiadP1.x, e1.cyflymder.y + cyflymiadP1.y, e1.lliw);
-                    //endidauNewydd[j] = new Endid(e2.lleoliad.x, e2.lleoliad.y, e2.cyflymder.x + cyflymiadP2.x, e2.cyflymder.y + cyflymiadP2.y, e2.lliw);
                 }
             }
             return endidauNewydd;
         }
         static nolCyflymiad(e1, e2, eiliadau) {
-            const addaswrG = 100000000000; //10000000000;
+            const cefndirol = 0.02;
+            const addaswrG = 100000000000;
             const G = 6.67408 * Math.pow(10, -11) * addaswrG;
-            const a = (m2, rSgwar) => G * m2 / rSgwar;
-            //const a = (m2, r) => G*m2/(r*r);
-            //const f = (m1,m2,r) => G*m1*m2/(r*r);
-            // F=G*m1*m2/(r*r) F=ma, a=F/m, a = G*m2/(r*r)
-            // mEarth = 5.97237×10^24 kg
-            // rEarth = 6371 km
             const pellter = e2.lleoliad.tynnu(e1.lleoliad);
             const rSgwar = pellter.maintSgwar();
-            const m = e2.mas; //100000000;
-            const maintCyflymiad = a(m, rSgwar) * eiliadau;
+            const m = e2.mas;
+            const maintCyflymiad = cefndirol + (G * m / (rSgwar)) * eiliadau;
             const uned = pellter.uned();
             const cyflymiad = uned.lluosi(maintCyflymiad);
             return cyflymiad;
