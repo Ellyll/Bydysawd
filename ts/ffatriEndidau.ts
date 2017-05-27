@@ -7,14 +7,22 @@ namespace Bydysawd {
 
             const endidau : Endid[] = [];
             for (let i=0 ; i<nifer ; i++) {
-                const x = FfatriEndidau.NolIntArHap(isafswmX, uchafswmX);
-                const y = FfatriEndidau.NolIntArHap(isafswmY, uchafswmY);
-                const cyflymderX = FfatriEndidau.NolArHap(-10,10);
-                const cyflymderY = FfatriEndidau.NolArHap(-10,10);
-                const radiws = 5;
-                const mas = 150; //(5.97237*Math.pow(10,24));
-                const pwynt = new Endid(x, y, cyflymderX, cyflymderY, radiws, mas, FfatriEndidau.NolLliwArHap());
-                endidau.push(pwynt);
+                let x: number;
+                let y: number;
+                while(true) {
+                    const x = FfatriEndidau.NolIntArHap(isafswmX, uchafswmX);
+                    const y = FfatriEndidau.NolIntArHap(isafswmY, uchafswmY);
+                    const cyflymderX = FfatriEndidau.NolArHap(-10,10);
+                    const cyflymderY = FfatriEndidau.NolArHap(-10,10);
+                    const radiws = 5;
+                    const mas = 150; //(5.97237*Math.pow(10,24));
+                    const endidNewydd = new Endid(x, y, cyflymderX, cyflymderY, radiws, mas, FfatriEndidau.NolLliwArHap());
+                    if (endidau.every(e => !CanfodyddGwrthdrawiadau.YnGwrthdaro(e, endidNewydd))) {
+                        endidau.push(endidNewydd);
+                        break;
+                    }
+                }
+
             }
             return endidau;
         }
