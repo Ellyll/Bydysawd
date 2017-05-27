@@ -64,8 +64,8 @@ namespace Bydysawd {
             for (let j=i+1 ; j<endidau.length ; j++) {                
                 const e2 = endidau[j];
                 if (CanfodyddGwrthdrawiadau.YnGwrthdaro(e1,e2)) {
-                    endidau[i] = e1.gydaLliw("FF0000");
-                    endidau[j] = e2.gydaLliw("FFFF00");
+                    //endidau[i] = e1.gydaLliw(Lliw.oHex("FF0000"));
+                    //endidau[j] = e2.gydaLliw(Lliw.oHex("FFFF00"));
                     const endidauArOlGwrthdaro = gwrthdaro(endidau[i], endidau[j]);
                     endidau[i] = endidauArOlGwrthdaro[0];
                     endidau[j] = endidauArOlGwrthdaro[1];

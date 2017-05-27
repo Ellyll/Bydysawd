@@ -15,7 +15,7 @@ namespace Bydysawd {
             const ctx = this._context;
             //ctx.strokeStyle = "#FFF";
             //ctx.fillStyle = "#FFF";
-            ctx.fillStyle = "#" + endid.lliw;
+            ctx.fillStyle = endid.lliw.felRGBA();
             ctx.beginPath();
             ctx.arc(endid.lleoliad.x, endid.lleoliad.y, endid.radiws, 0, Math.PI*2.0, false);
             ctx.fill();

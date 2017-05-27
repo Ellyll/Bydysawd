@@ -1,4 +1,6 @@
 /// <reference path="./fector.ts" />
+/// <reference path="./lliw.ts" />
+
 namespace Bydysawd {
     export class Endid {
         readonly lleoliad : Fector2D;
@@ -9,8 +11,8 @@ namespace Bydysawd {
                     cyflymderX: number,
                     cyflymderY: number,
                     readonly radiws: number,
-                    readonly mas : number,
-                    readonly lliw: string) {
+                    readonly mas: number,
+                    readonly lliw: Lliw) {
             this.lleoliad = new Fector2D(x, y);
             this.cyflymder = new Fector2D(cyflymderX, cyflymderY);
         }
@@ -23,7 +25,7 @@ namespace Bydysawd {
             return new Endid(lleoliad.x, lleoliad.y, this.cyflymder.x, this.cyflymder.y, this.radiws, this.mas, this.lliw);
         }
 
-        gydaLliw(lliw : string) : Endid {
+        gydaLliw(lliw : Lliw) : Endid {
             return new Endid(this.lleoliad.x, this.lleoliad.y, this.cyflymder.x, this.cyflymder.y, this.radiws, this.mas, lliw);
         }
     }

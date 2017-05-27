@@ -13,10 +13,16 @@ namespace Bydysawd {
                 const cyflymderY = FfatriEndidau.NolArHap(-10,10);
                 const radiws = 5;
                 const mas = 150; //(5.97237*Math.pow(10,24));
-                const pwynt = new Endid(x, y, cyflymderX, cyflymderY, radiws, mas, 'FFFFFF');
+                const pwynt = new Endid(x, y, cyflymderX, cyflymderY, radiws, mas, FfatriEndidau.NolLliwArHap());
                 endidau.push(pwynt);
             }
             return endidau;
+        }
+
+        private static NolLliwArHap() : Lliw {
+            return Lliw.oRGB(FfatriEndidau.NolIntArHap(0, 255),
+                             FfatriEndidau.NolIntArHap(0, 255),
+                             FfatriEndidau.NolIntArHap(0, 255));
         }
 
         private static NolArHap(isaf: number, uchaf: number) : number {

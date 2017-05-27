@@ -51,7 +51,65 @@ var Bydysawd;
     }
     Bydysawd.Fector2D = Fector2D;
 })(Bydysawd || (Bydysawd = {}));
+var Bydysawd;
+(function (Bydysawd) {
+    class Lliw {
+        constructor(r, g, b, a) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = a;
+            if (!Lliw.ynDilys(r))
+                throw Error(`Cydran r annilys: ${r}`);
+            if (!Lliw.ynDilys(g))
+                throw Error(`Cydran g annilys: ${g}`);
+            if (!Lliw.ynDilys(b))
+                throw Error(`Cydran b annilys: ${b}`);
+            if (!Lliw.ynDilys(a))
+                throw Error(`Cydran a annilys: ${a}`);
+        }
+        static ynDilys(cydran) {
+            return cydran >= 0 && cydran <= 255;
+        }
+        static oRGBA(r, g, b, a) {
+            return new Lliw(r, g, b, a);
+        }
+        static oRGB(r, g, b) {
+            return new Lliw(r, g, b, 255);
+        }
+        static oHex(hex) {
+            const str = hex.startsWith("#") ? hex.substr(1) : hex;
+            const hyd = str.length;
+            // RGB, RGBA, RRGGBB, RRGGBBAA
+            let step;
+            switch (hyd) {
+                case 3:
+                case 4:
+                    step = 1;
+                    break;
+                case 6:
+                case 8:
+                    step = 2;
+                    break;
+                default:
+                    throw Error(`Fformat lliw anhywir: ${hex}`);
+            }
+            const c = []; // cydrannau
+            for (let i = 0; i < hyd; i += step) {
+                c.push(parseInt(str.substr(i, step), 16));
+            }
+            if (c.length < 4)
+                c.push(255);
+            return new Lliw(c[0], c[1], c[2], c[3]);
+        }
+        felRGBA() {
+            return `rgba(${this.r},${this.g},${this.b},${this.a})`;
+        }
+    }
+    Bydysawd.Lliw = Lliw;
+})(Bydysawd || (Bydysawd = {}));
 /// <reference path="./fector.ts" />
+/// <reference path="./lliw.ts" />
 var Bydysawd;
 (function (Bydysawd) {
     class Endid {
@@ -89,10 +147,13 @@ var Bydysawd;
                 const cyflymderY = FfatriEndidau.NolArHap(-10, 10);
                 const radiws = 5;
                 const mas = 150; //(5.97237*Math.pow(10,24));
-                const pwynt = new Bydysawd.Endid(x, y, cyflymderX, cyflymderY, radiws, mas, 'FFFFFF');
+                const pwynt = new Bydysawd.Endid(x, y, cyflymderX, cyflymderY, radiws, mas, FfatriEndidau.NolLliwArHap());
                 endidau.push(pwynt);
             }
             return endidau;
+        }
+        static NolLliwArHap() {
+            return Bydysawd.Lliw.oRGB(FfatriEndidau.NolIntArHap(0, 255), FfatriEndidau.NolIntArHap(0, 255), FfatriEndidau.NolIntArHap(0, 255));
         }
         static NolArHap(isaf, uchaf) {
             return (Math.random() * (uchaf - isaf)) + isaf;
@@ -130,7 +191,7 @@ var Bydysawd;
             const ctx = this._context;
             //ctx.strokeStyle = "#FFF";
             //ctx.fillStyle = "#FFF";
-            ctx.fillStyle = "#" + endid.lliw;
+            ctx.fillStyle = endid.lliw.felRGBA();
             ctx.beginPath();
             ctx.arc(endid.lleoliad.x, endid.lleoliad.y, endid.radiws, 0, Math.PI * 2.0, false);
             ctx.fill();
@@ -195,8 +256,8 @@ var Bydysawd;
             for (let j = i + 1; j < endidau.length; j++) {
                 const e2 = endidau[j];
                 if (Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2)) {
-                    endidau[i] = e1.gydaLliw("FF0000");
-                    endidau[j] = e2.gydaLliw("FFFF00");
+                    //endidau[i] = e1.gydaLliw(Lliw.oHex("FF0000"));
+                    //endidau[j] = e2.gydaLliw(Lliw.oHex("FFFF00"));
                     const endidauArOlGwrthdaro = gwrthdaro(endidau[i], endidau[j]);
                     endidau[i] = endidauArOlGwrthdaro[0];
                     endidau[j] = endidauArOlGwrthdaro[1];
@@ -294,24 +355,24 @@ var Bydysawd;
             it("Dylai dychweld gwir os yw cyfanswm y ddau radiws yn mwy na'r pellter", () => {
                 const radiws1 = 7;
                 const radiws2 = 5;
-                const e1 = new Bydysawd.Endid(2, 2, 0, 0, radiws1, 1, "FFFFFF");
-                const e2 = new Bydysawd.Endid(2, 2 + radiws1, 0, 0, radiws2, 1, "FFFFFF");
+                const e1 = new Bydysawd.Endid(2, 2, 0, 0, radiws1, 1, Bydysawd.Lliw.oHex("FFFFFF"));
+                const e2 = new Bydysawd.Endid(2, 2 + radiws1, 0, 0, radiws2, 1, Bydysawd.Lliw.oHex("FFFFFF"));
                 const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
                 expect(gwir).toBeTruthy();
             });
             it("Dylai dychweld anwir os yw cyfanswm y ddau radiws yn hafal i'r pellter", () => {
                 const radiws1 = 7;
                 const radiws2 = 5;
-                const e1 = new Bydysawd.Endid(2, 2, 0, 0, radiws1, 1, "FFFFFF");
-                const e2 = new Bydysawd.Endid(2, 2 + (radiws1 + radiws2), 0, 0, radiws2, 1, "FFFFFF");
+                const e1 = new Bydysawd.Endid(2, 2, 0, 0, radiws1, 1, Bydysawd.Lliw.oHex("FFFFFF"));
+                const e2 = new Bydysawd.Endid(2, 2 + (radiws1 + radiws2), 0, 0, radiws2, 1, Bydysawd.Lliw.oHex("FFFFFF"));
                 const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
                 expect(gwir).toBeFalsy();
             });
             it("Dylai dychweld anwir os yw cyfanswm y ddau radiws yn llai na'r pellter", () => {
                 const radiws1 = 7;
                 const radiws2 = 5;
-                const e1 = new Bydysawd.Endid(2, 2, 0, 0, radiws1, 1, "FFFFFF");
-                const e2 = new Bydysawd.Endid(2, 2 + (radiws1 + radiws2) + 1, 0, 0, radiws2, 1, "FFFFFF");
+                const e1 = new Bydysawd.Endid(2, 2, 0, 0, radiws1, 1, Bydysawd.Lliw.oHex("FFFFFF"));
+                const e2 = new Bydysawd.Endid(2, 2 + (radiws1 + radiws2) + 1, 0, 0, radiws2, 1, Bydysawd.Lliw.oHex("FFFFFF"));
                 const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
                 expect(gwir).toBeFalsy();
             });
@@ -392,6 +453,117 @@ var Bydysawd;
                 const gwir = new Bydysawd.Fector2D(6, 8).map(n => n + 3);
                 expect(gwir.x).toBe(9);
                 expect(gwir.y).toBe(11);
+            });
+        });
+    });
+})(Bydysawd || (Bydysawd = {}));
+/// <reference path="../lliw.ts" />
+/// <reference path="../types/jasmine/index.d.ts" />
+var Bydysawd;
+(function (Bydysawd) {
+    describe("Lliw", () => {
+        describe("Pryd yn creu o RGBA", () => {
+            it("Dylai creu gyda chydrannau cywir", () => {
+                const lliw = Bydysawd.Lliw.oRGBA(1, 2, 3, 4);
+                expect(lliw.r).toBe(1);
+                expect(lliw.g).toBe(2);
+                expect(lliw.b).toBe(3);
+                expect(lliw.a).toBe(4);
+            });
+            it("Dylai llechio gyda chydrannau < 0", () => {
+                expect(() => Bydysawd.Lliw.oRGBA(-1, 0, 0, 0)).toThrowError("Cydran r annilys: -1");
+                expect(() => Bydysawd.Lliw.oRGBA(0, -1, 0, 0)).toThrowError("Cydran g annilys: -1");
+                expect(() => Bydysawd.Lliw.oRGBA(0, 0, -1, 0)).toThrowError("Cydran b annilys: -1");
+                expect(() => Bydysawd.Lliw.oRGBA(0, 0, 0, -1)).toThrowError("Cydran a annilys: -1");
+            });
+            it("Dylai llechio gyda chydrannau > 255", () => {
+                expect(() => Bydysawd.Lliw.oRGBA(256, 0, 0, 0)).toThrowError("Cydran r annilys: 256");
+                expect(() => Bydysawd.Lliw.oRGBA(0, 256, 0, 0)).toThrowError("Cydran g annilys: 256");
+                expect(() => Bydysawd.Lliw.oRGBA(0, 0, 256, 0)).toThrowError("Cydran b annilys: 256");
+                expect(() => Bydysawd.Lliw.oRGBA(0, 0, 0, 256)).toThrowError("Cydran a annilys: 256");
+            });
+        });
+        describe("Pryd yn creu o RGB", () => {
+            it("Dylai creu gyda chydrannau cywir", () => {
+                const lliw = Bydysawd.Lliw.oRGB(1, 2, 3);
+                expect(lliw.r).toBe(1);
+                expect(lliw.g).toBe(2);
+                expect(lliw.b).toBe(3);
+                expect(lliw.a).toBe(255);
+            });
+            it("Dylai llechio gyda chydrannau < 0", () => {
+                expect(() => Bydysawd.Lliw.oRGB(-1, 0, 0)).toThrowError("Cydran r annilys: -1");
+                expect(() => Bydysawd.Lliw.oRGB(0, -1, 0)).toThrowError("Cydran g annilys: -1");
+                expect(() => Bydysawd.Lliw.oRGB(0, 0, -1)).toThrowError("Cydran b annilys: -1");
+            });
+            it("Dylai llechio gyda chydrannau > 255", () => {
+                expect(() => Bydysawd.Lliw.oRGB(256, 0, 0)).toThrowError("Cydran r annilys: 256");
+                expect(() => Bydysawd.Lliw.oRGB(0, 256, 0)).toThrowError("Cydran g annilys: 256");
+                expect(() => Bydysawd.Lliw.oRGB(0, 0, 256)).toThrowError("Cydran b annilys: 256");
+            });
+        });
+        describe("Pryd yn creu o hex", () => {
+            it('Dylai creu o fformat FFF', () => {
+                const lliw = Bydysawd.Lliw.oHex('ABC');
+                expect(lliw.r).toBe(10);
+                expect(lliw.g).toBe(11);
+                expect(lliw.b).toBe(12);
+                expect(lliw.a).toBe(255);
+            });
+            it('Dylai creu o fformat #FFF', () => {
+                const lliw = Bydysawd.Lliw.oHex('#ABC');
+                expect(lliw.r).toBe(10);
+                expect(lliw.g).toBe(11);
+                expect(lliw.b).toBe(12);
+                expect(lliw.a).toBe(255);
+            });
+            it('Dylai creu o fformat FFFF', () => {
+                const lliw = Bydysawd.Lliw.oHex('ABCD');
+                expect(lliw.r).toBe(10);
+                expect(lliw.g).toBe(11);
+                expect(lliw.b).toBe(12);
+                expect(lliw.a).toBe(13);
+            });
+            it('Dylai creu o fformat #FFFF', () => {
+                const lliw = Bydysawd.Lliw.oHex('#ABCD');
+                expect(lliw.r).toBe(10);
+                expect(lliw.g).toBe(11);
+                expect(lliw.b).toBe(12);
+                expect(lliw.a).toBe(13);
+            });
+            it('Dylai creu o fformat FFFFFF', () => {
+                const lliw = Bydysawd.Lliw.oHex('ABCDEF');
+                expect(lliw.r).toBe(171);
+                expect(lliw.g).toBe(205);
+                expect(lliw.b).toBe(239);
+                expect(lliw.a).toBe(255);
+            });
+            it('Dylai creu o fformat #FFFFFF', () => {
+                const lliw = Bydysawd.Lliw.oHex('#ABCDEF');
+                expect(lliw.r).toBe(171);
+                expect(lliw.g).toBe(205);
+                expect(lliw.b).toBe(239);
+                expect(lliw.a).toBe(255);
+            });
+            it('Dylai creu o fformat FFFFFFFF', () => {
+                const lliw = Bydysawd.Lliw.oHex('ABCDEF12');
+                expect(lliw.r).toBe(171);
+                expect(lliw.g).toBe(205);
+                expect(lliw.b).toBe(239);
+                expect(lliw.a).toBe(18);
+            });
+            it('Dylai creu o fformat #FFFFFF', () => {
+                const lliw = Bydysawd.Lliw.oHex('#ABCDEF12');
+                expect(lliw.r).toBe(171);
+                expect(lliw.g).toBe(205);
+                expect(lliw.b).toBe(239);
+                expect(lliw.a).toBe(18);
+            });
+        });
+        describe("felRGBA", () => {
+            it("Dylai dychweld llinyn gyda'r fformat rgba(r,g,b,a)", () => {
+                const lliw = Bydysawd.Lliw.oRGBA(99, 0, 7, 123);
+                expect(lliw.felRGBA()).toBe("rgba(99,0,7,123)");
             });
         });
     });
