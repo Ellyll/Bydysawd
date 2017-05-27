@@ -118,8 +118,8 @@ namespace Bydysawd {
         const v2After = v2nAfterFector.ychwanegu(v2tAfterFector);
 
         // Creu pwyntiau newydd
-        const e1a = new Endid(e1.lleoliad.x, e1.lleoliad.y, v1After.x, v1After.y, e1.mas, e1.lliw);
-        const e2a = new Endid(e2.lleoliad.x, e2.lleoliad.y, v2After.x, v2After.y, e2.mas, e2.lliw);
+        const e1a = new Endid(e1.lleoliad.x, e1.lleoliad.y, v1After.x, v1After.y, e1.radiws, e1.mas, e1.lliw);
+        const e2a = new Endid(e2.lleoliad.x, e2.lleoliad.y, v2After.x, v2After.y, e2.radiws, e2.mas, e2.lliw);
         return [ e1a, e2a ];
     }
 }

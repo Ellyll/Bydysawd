@@ -55,20 +55,21 @@ var Bydysawd;
 var Bydysawd;
 (function (Bydysawd) {
     class Endid {
-        constructor(x, y, cyflymderX, cyflymderY, mas, lliw) {
+        constructor(x, y, cyflymderX, cyflymderY, radiws, mas, lliw) {
+            this.radiws = radiws;
             this.mas = mas;
             this.lliw = lliw;
             this.lleoliad = new Bydysawd.Fector2D(x, y);
             this.cyflymder = new Bydysawd.Fector2D(cyflymderX, cyflymderY);
         }
         gydaCyflymder(cyflymder) {
-            return new Endid(this.lleoliad.x, this.lleoliad.y, cyflymder.x, cyflymder.y, this.mas, this.lliw);
+            return new Endid(this.lleoliad.x, this.lleoliad.y, cyflymder.x, cyflymder.y, this.radiws, this.mas, this.lliw);
         }
         gydaLleoliad(lleoliad) {
-            return new Endid(lleoliad.x, lleoliad.y, this.cyflymder.x, this.cyflymder.y, this.mas, this.lliw);
+            return new Endid(lleoliad.x, lleoliad.y, this.cyflymder.x, this.cyflymder.y, this.radiws, this.mas, this.lliw);
         }
         gydaLliw(lliw) {
-            return new Endid(this.lleoliad.x, this.lleoliad.y, this.cyflymder.x, this.cyflymder.y, this.mas, lliw);
+            return new Endid(this.lleoliad.x, this.lleoliad.y, this.cyflymder.x, this.cyflymder.y, this.radiws, this.mas, lliw);
         }
     }
     Bydysawd.Endid = Endid;
@@ -86,8 +87,9 @@ var Bydysawd;
                 const y = FfatriEndidau.NolIntArHap(isafswmY, uchafswmY);
                 const cyflymderX = FfatriEndidau.NolArHap(-10, 10);
                 const cyflymderY = FfatriEndidau.NolArHap(-10, 10);
+                const radiws = 5;
                 const mas = 150; //(5.97237*Math.pow(10,24));
-                const pwynt = new Bydysawd.Endid(x, y, cyflymderX, cyflymderY, mas, 'FFFFFF');
+                const pwynt = new Bydysawd.Endid(x, y, cyflymderX, cyflymderY, radiws, mas, 'FFFFFF');
                 endidau.push(pwynt);
             }
             return endidau;
@@ -108,12 +110,8 @@ var Bydysawd;
 (function (Bydysawd) {
     class CanfodyddGwrthdrawiadau {
         static YnGwrthdaro(endid, targed) {
-            const targedau = targed instanceof (Bydysawd.Endid) ? [targed] : targed;
-            return targedau.some(t => t !== endid && CanfodyddGwrthdrawiadau.NolPellterRhwngEndidiau(endid, t) < 1);
-        }
-        static NolPellterRhwngEndidiau(endidA, endidB) {
-            return Math.sqrt(Math.pow(endidB.lleoliad.x - endidA.lleoliad.x, 2) +
-                Math.pow(endidB.lleoliad.y - endidA.lleoliad.y, 2));
+            const pellter = endid.lleoliad.pellterI(targed.lleoliad);
+            return (endid.radiws + targed.radiws) > pellter;
         }
     }
     Bydysawd.CanfodyddGwrthdrawiadau = CanfodyddGwrthdrawiadau;
@@ -132,9 +130,11 @@ var Bydysawd;
             const ctx = this._context;
             //ctx.strokeStyle = "#FFF";
             //ctx.fillStyle = "#FFF";
-            //ctx.arc(pwynt.x, pwynt.y, 1, 0, Math.PI*2.0, false);
             ctx.fillStyle = "#" + endid.lliw;
-            ctx.fillRect(endid.lleoliad.x, endid.lleoliad.y, 1, 1);
+            ctx.beginPath();
+            ctx.arc(endid.lleoliad.x, endid.lleoliad.y, endid.radiws, 0, Math.PI * 2.0, false);
+            ctx.fill();
+            //ctx.fillRect(endid.lleoliad.x, endid.lleoliad.y, 1, 1);
         }
     }
     Bydysawd.Lliniadydd = Lliniadydd;
@@ -237,8 +237,8 @@ var Bydysawd;
         const v1After = v1nAfterFector.ychwanegu(v1tAfterFector);
         const v2After = v2nAfterFector.ychwanegu(v2tAfterFector);
         // Creu pwyntiau newydd
-        const e1a = new Bydysawd.Endid(e1.lleoliad.x, e1.lleoliad.y, v1After.x, v1After.y, e1.mas, e1.lliw);
-        const e2a = new Bydysawd.Endid(e2.lleoliad.x, e2.lleoliad.y, v2After.x, v2After.y, e2.mas, e2.lliw);
+        const e1a = new Bydysawd.Endid(e1.lleoliad.x, e1.lleoliad.y, v1After.x, v1After.y, e1.radiws, e1.mas, e1.lliw);
+        const e2a = new Bydysawd.Endid(e2.lleoliad.x, e2.lleoliad.y, v2After.x, v2After.y, e2.radiws, e2.mas, e2.lliw);
         return [e1a, e2a];
     }
 })(Bydysawd || (Bydysawd = {}));
@@ -291,22 +291,28 @@ var Bydysawd;
 (function (Bydysawd) {
     describe("CanfodyddGwrthdrawiadau", () => {
         describe("YnGwrthdaro", () => {
-            it("Dylai dychweld gwir os yw targed yn agosach na 1", () => {
-                const f1 = new Bydysawd.Endid(2, 2, 0, 0, 1, "FFFFFF");
-                const f2 = new Bydysawd.Endid(2, 2.5, 0, 0, 1, "FFFFFF");
-                const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(f1, f2);
+            it("Dylai dychweld gwir os yw cyfanswm y ddau radiws yn mwy na'r pellter", () => {
+                const radiws1 = 7;
+                const radiws2 = 5;
+                const e1 = new Bydysawd.Endid(2, 2, 0, 0, radiws1, 1, "FFFFFF");
+                const e2 = new Bydysawd.Endid(2, 2 + radiws1, 0, 0, radiws2, 1, "FFFFFF");
+                const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
                 expect(gwir).toBeTruthy();
             });
-            it("Dylai dychweld anwir os yw targed yn union 1", () => {
-                const f1 = new Bydysawd.Endid(2, 2, 0, 0, 1, "FFFFFF");
-                const f2 = new Bydysawd.Endid(2, 3, 0, 0, 1, "FFFFFF");
-                const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(f1, f2);
+            it("Dylai dychweld anwir os yw cyfanswm y ddau radiws yn hafal i'r pellter", () => {
+                const radiws1 = 7;
+                const radiws2 = 5;
+                const e1 = new Bydysawd.Endid(2, 2, 0, 0, radiws1, 1, "FFFFFF");
+                const e2 = new Bydysawd.Endid(2, 2 + (radiws1 + radiws2), 0, 0, radiws2, 1, "FFFFFF");
+                const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
                 expect(gwir).toBeFalsy();
             });
-            it("Dylai dychweld anwir os yw targed bellach 1", () => {
-                const f1 = new Bydysawd.Endid(2, 2, 0, 0, 1, "FFFFFF");
-                const f2 = new Bydysawd.Endid(4, 4, 0, 0, 1, "FFFFFF");
-                const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(f1, f2);
+            it("Dylai dychweld anwir os yw cyfanswm y ddau radiws yn llai na'r pellter", () => {
+                const radiws1 = 7;
+                const radiws2 = 5;
+                const e1 = new Bydysawd.Endid(2, 2, 0, 0, radiws1, 1, "FFFFFF");
+                const e2 = new Bydysawd.Endid(2, 2 + (radiws1 + radiws2) + 1, 0, 0, radiws2, 1, "FFFFFF");
+                const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
                 expect(gwir).toBeFalsy();
             });
         });
