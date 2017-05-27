@@ -49,10 +49,11 @@ namespace Bydysawd {
         endidau = endidau
             // Symdu
             .map( e => {
-                const lleoliadNewydd = e.lleoliad.ychwanegu(e.cyflymder.lluosi(eiliadau))
+                const lleoliadNewydd = e.lleoliad.ychwanegu(e.cyflymder.lluosi(eiliadau));
+                const endidNewydd = e.gydaLleoliad(lleoliadNewydd);
 
-                if (endidau.every(e2 => e2 === e ? true : lleoliadNewydd.pellterI(e2.lleoliad) >= 1)) {
-                     return e.gydaLleoliad(lleoliadNewydd);
+                if (endidau.every(e2 => e2 === e ? true : !CanfodyddGwrthdrawiadau.YnGwrthdaro(e2, endidNewydd))) {
+                     return endidNewydd;
                 }
                 return e;
             })

@@ -252,8 +252,9 @@ var Bydysawd;
         endidau = endidau
             .map(e => {
             const lleoliadNewydd = e.lleoliad.ychwanegu(e.cyflymder.lluosi(eiliadau));
-            if (endidau.every(e2 => e2 === e ? true : lleoliadNewydd.pellterI(e2.lleoliad) >= 1)) {
-                return e.gydaLleoliad(lleoliadNewydd);
+            const endidNewydd = e.gydaLleoliad(lleoliadNewydd);
+            if (endidau.every(e2 => e2 === e ? true : !Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e2, endidNewydd))) {
+                return endidNewydd;
             }
             return e;
         })
