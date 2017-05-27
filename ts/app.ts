@@ -9,7 +9,11 @@ namespace Bydysawd {
             const context = canvas.getContext("2d");
             const lliniadydd = new Lliniadydd(context);
 
-            let endidauCychwyn = FfatriEndidau.CreuArHap(10, 0, 0, 500, 500);
+            // Gosod y canvas i'r maint mwyaf bosib
+            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth;
+
+            const endidauCychwyn = FfatriEndidau.CreuArHap(10, 0, 0, canvas.width-1, canvas.height-1);
 
             let amserHen = performance.now();
             let niferFframiau = 0;
