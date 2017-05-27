@@ -12,6 +12,10 @@ namespace Bydysawd {
         get y() : number { return this._data[1]; }
         get length() : number { return 2; }
 
+        toString() : string {
+            return `(${this.x},${this.y})`;
+        }
+
         // Dot product
         dot(fector : Fector2D) : number {
             return this.x*fector.x + this.y*fector.y;
