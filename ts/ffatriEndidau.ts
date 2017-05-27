@@ -9,9 +9,9 @@ namespace Bydysawd {
             for (let i=0 ; i<nifer ; i++) {
                 const x = FfatriEndidau.NolIntArHap(isafswmX, uchafswmX);
                 const y = FfatriEndidau.NolIntArHap(isafswmY, uchafswmY);
-                const cyflymderX = 0; //FfatriEndidau.NolArHap(-10,10);
-                const cyflymderY = 0; //FfatriEndidau.NolArHap(-10,10);
-                const mas = 100; // (5.97237*Math.pow(10,24));
+                const cyflymderX = FfatriEndidau.NolArHap(-10,10);
+                const cyflymderY = FfatriEndidau.NolArHap(-10,10);
+                const mas = 150; //(5.97237*Math.pow(10,24));
                 const pwynt = new Endid(x, y, cyflymderX, cyflymderY, mas, 'FFFFFF');
                 endidau.push(pwynt);
             }
