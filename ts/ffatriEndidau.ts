@@ -2,10 +2,10 @@
 
 namespace Bydysawd {
     export class FfatriEndidau {
-        static CreuArHap(nifer: number, isafswmX: number, isafswmY: number, uchafswmX: number, uchafswmY: number) : Endid[] {
+        static CreuArHap(nifer: number, isafswmX: number, isafswmY: number, uchafswmX: number, uchafswmY: number, endidauPresenol : Endid[] = []) : Endid[] {
             if (nifer < 1) return [];
 
-            const endidau : Endid[] = [];
+            const endidau : Endid[] = endidauPresenol.slice();
             for (let i=0 ; i<nifer ; i++) {
                 let x: number;
                 let y: number;
@@ -14,7 +14,7 @@ namespace Bydysawd {
                     const y = FfatriEndidau.NolIntArHap(isafswmY, uchafswmY);
                     const cyflymderX = FfatriEndidau.NolArHap(-10,10);
                     const cyflymderY = FfatriEndidau.NolArHap(-10,10);
-                    const radiws = FfatriEndidau.NolIntArHap(1,20);
+                    const radiws = CynhyrchyddGaussian.nolAmrediadInt(1,15); //FfatriEndidau.NolIntArHap(1,15);
                     const cyfaint = (4/3)*Math.PI*Math.pow(radiws, 3); // V = 4/3 PI r^3
                     const dwysedd = 1;
                     const mas = dwysedd * cyfaint; //150; //(5.97237*Math.pow(10,24));

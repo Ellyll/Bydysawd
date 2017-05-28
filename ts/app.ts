@@ -13,7 +13,11 @@ namespace Bydysawd {
             canvas.height = window.innerHeight;
             canvas.width = window.innerWidth;
 
-            const endidauCychwyn = FfatriEndidau.CreuArHap(10, 0, 0, canvas.width-1, canvas.height-1);
+            const xCanol = (canvas.width/2)-1;
+            const yCanol = (canvas.height/2)-1;
+
+            const endidCanol = FfatriEndidau.CreuArHap(1, xCanol, xCanol, xCanol, yCanol);
+            const endidauCychwyn = FfatriEndidau.CreuArHap(20, 0, 0, canvas.width-1, canvas.height-1);
 
             let amserHen = performance.now();
             let niferFframiau = 0;

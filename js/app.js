@@ -136,10 +136,10 @@ var Bydysawd;
 var Bydysawd;
 (function (Bydysawd) {
     class FfatriEndidau {
-        static CreuArHap(nifer, isafswmX, isafswmY, uchafswmX, uchafswmY) {
+        static CreuArHap(nifer, isafswmX, isafswmY, uchafswmX, uchafswmY, endidauPresenol = []) {
             if (nifer < 1)
                 return [];
-            const endidau = [];
+            const endidau = endidauPresenol.slice();
             for (let i = 0; i < nifer; i++) {
                 let x;
                 let y;
@@ -148,7 +148,7 @@ var Bydysawd;
                     const y = FfatriEndidau.NolIntArHap(isafswmY, uchafswmY);
                     const cyflymderX = FfatriEndidau.NolArHap(-10, 10);
                     const cyflymderY = FfatriEndidau.NolArHap(-10, 10);
-                    const radiws = FfatriEndidau.NolIntArHap(1, 20);
+                    const radiws = Bydysawd.CynhyrchyddGaussian.nolAmrediadInt(1, 15); //FfatriEndidau.NolIntArHap(1,15);
                     const cyfaint = (4 / 3) * Math.PI * Math.pow(radiws, 3); // V = 4/3 PI r^3
                     const dwysedd = 1;
                     const mas = dwysedd * cyfaint; //150; //(5.97237*Math.pow(10,24));
@@ -222,7 +222,10 @@ var Bydysawd;
             // Gosod y canvas i'r maint mwyaf bosib
             canvas.height = window.innerHeight;
             canvas.width = window.innerWidth;
-            const endidauCychwyn = Bydysawd.FfatriEndidau.CreuArHap(10, 0, 0, canvas.width - 1, canvas.height - 1);
+            const xCanol = (canvas.width / 2) - 1;
+            const yCanol = (canvas.height / 2) - 1;
+            const endidCanol = Bydysawd.FfatriEndidau.CreuArHap(1, xCanol, xCanol, xCanol, yCanol);
+            const endidauCychwyn = Bydysawd.FfatriEndidau.CreuArHap(20, 0, 0, canvas.width - 1, canvas.height - 1);
             let amserHen = performance.now();
             let niferFframiau = 0;
             const lluniadu = (amserRwan, amserHen, endidau) => {
@@ -315,6 +318,43 @@ var Bydysawd;
 })(Bydysawd || (Bydysawd = {}));
 var Bydysawd;
 (function (Bydysawd) {
+    class CynhyrchyddGaussian {
+        static nol(mean, stdDev) {
+            // Defnyddio https://en.wikipedia.org/wiki/Marsaglia_polar_method
+            if (CynhyrchyddGaussian.isSpareReady) {
+                CynhyrchyddGaussian.isSpareReady = false;
+                return CynhyrchyddGaussian.spare * stdDev + mean;
+            }
+            else {
+                let u;
+                let v;
+                let s;
+                do {
+                    u = Math.random() * 2 - 1;
+                    v = Math.random() * 2 - 1;
+                    s = u * u + v * v;
+                } while (s >= 1 || s == 0);
+                let mul = Math.sqrt(-2.0 * Math.log(s) / s);
+                CynhyrchyddGaussian.spare = v * mul;
+                CynhyrchyddGaussian.isSpareReady = true;
+                return mean + stdDev * u * mul;
+            }
+        }
+        static nolAmrediadInt(cychwyn, gorffen) {
+            const canol = (cychwyn + gorffen) / 2;
+            const gwyriadSafonol = (gorffen - cychwyn) / 2;
+            let n = cychwyn - 1;
+            do {
+                n = CynhyrchyddGaussian.nol(canol, gwyriadSafonol);
+            } while (n < cychwyn || n > gorffen);
+            return Math.round(n);
+        }
+    }
+    CynhyrchyddGaussian.isSpareReady = false;
+    Bydysawd.CynhyrchyddGaussian = CynhyrchyddGaussian;
+})(Bydysawd || (Bydysawd = {}));
+var Bydysawd;
+(function (Bydysawd) {
     class Disgyrchiant {
         static gweithreduDisgyrchiant(endidau, eiliadau) {
             const cyflymderIsaf = -30.0;
@@ -340,8 +380,8 @@ var Bydysawd;
             return endidauNewydd;
         }
         static nolCyflymiad(e1, e2, eiliadau) {
-            const cefndirol = 0.02;
-            const addaswrG = 100000000000;
+            const cefndirol = 0.001;
+            const addaswrG = 10000000000;
             const G = 6.67408 * Math.pow(10, -11) * addaswrG;
             const pellter = e2.lleoliad.tynnu(e1.lleoliad);
             const rSgwar = pellter.maintSgwar();
@@ -385,6 +425,54 @@ var Bydysawd;
                 const e2 = new Bydysawd.Endid(2, 2 + (radiws1 + radiws2) + 1, 0, 0, radiws2, 1, Bydysawd.Lliw.oHex("FFFFFF"));
                 const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
                 expect(gwir).toBeFalsy();
+            });
+        });
+    });
+})(Bydysawd || (Bydysawd = {}));
+/// <reference path="../cynhyrchyddGaussian.ts" />
+/// <reference path="../types/jasmine/index.d.ts" />
+var Bydysawd;
+(function (Bydysawd) {
+    describe("CynhyrchyddGaussian", () => {
+        describe("nol", () => {
+            const cymedr = 10;
+            const gwyriadSafonol = 5;
+            const rhifau = [];
+            // Cynhyrchu 10000 o rifau ar gyfer profi
+            for (let i = 1; i <= 10000; i++) {
+                rhifau.push(Bydysawd.CynhyrchyddGaussian.nol(cymedr, gwyriadSafonol));
+            }
+            const cyfartaledd = rhifau.reduce((cyfanswm, x) => cyfanswm + x, 0) / rhifau.length;
+            it("Dylai dychweld rhifau gyda cyfartaledd agos i'r cymedr a rhoddwyd", () => {
+                expect(Math.abs(cyfartaledd - cymedr)).toBeLessThan(1.0);
+            });
+            it("Dylai gwyriad safonol rhifau cynhyrchwyd fod yn agos i'r un a rhoddwyd", () => {
+                const amrywiant = rhifau
+                    .map(x => Math.pow(x - cyfartaledd, 2))
+                    .reduce((cyfanswm, x) => cyfanswm + x, 0)
+                    / rhifau.length;
+                const gwyriad = Math.sqrt(amrywiant);
+                expect(Math.abs(gwyriad - gwyriadSafonol)).toBeLessThan(1.0);
+            });
+        });
+        describe("nolAmrediadInt", () => {
+            const rhifau = [];
+            const cychwyn = 5;
+            const gorffen = 15;
+            const canol = (cychwyn + gorffen) / 2;
+            // Cynhyrchu 10000 o rifau ar gyfer profi
+            for (let i = 1; i <= 10000; i++) {
+                rhifau.push(Bydysawd.CynhyrchyddGaussian.nolAmrediadInt(cychwyn, gorffen));
+            }
+            const cyfartaledd = rhifau.reduce((cyfanswm, x) => cyfanswm + x, 0) / rhifau.length;
+            it("Dylai fod bob rhif yn int", () => {
+                expect(rhifau.every(n => n === Math.floor(n))).toBe(true);
+            });
+            it("Dylai bob rhif fod oddifewn yr amrediad", () => {
+                expect(rhifau.every(n => n >= cychwyn && n <= gorffen)).toBe(true);
+            });
+            it("Dylai'r cyfartalled fod yn agos i canol yr amrediad", () => {
+                expect(Math.abs(cyfartaledd - canol)).toBeLessThan(1.0);
             });
         });
     });
