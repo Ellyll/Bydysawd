@@ -148,8 +148,10 @@ var Bydysawd;
                     const y = FfatriEndidau.NolIntArHap(isafswmY, uchafswmY);
                     const cyflymderX = FfatriEndidau.NolArHap(-10, 10);
                     const cyflymderY = FfatriEndidau.NolArHap(-10, 10);
-                    const radiws = 5;
-                    const mas = 150; //(5.97237*Math.pow(10,24));
+                    const radiws = FfatriEndidau.NolIntArHap(1, 20);
+                    const cyfaint = (4 / 3) * Math.PI * Math.pow(radiws, 3); // V = 4/3 PI r^3
+                    const dwysedd = 1;
+                    const mas = dwysedd * cyfaint; //150; //(5.97237*Math.pow(10,24));
                     const endidNewydd = new Bydysawd.Endid(x, y, cyflymderX, cyflymderY, radiws, mas, FfatriEndidau.NolLliwArHap());
                     if (endidau.every(e => !Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e, endidNewydd))) {
                         endidau.push(endidNewydd);
