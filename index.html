@@ -13,6 +13,7 @@
 				border: none;
 				color: white;
 				background-color: black;
+                font-family: Arial, Helvetica, sans-serif;
 			}
 			canvas {
 				margin: 0;
@@ -20,10 +21,46 @@
 				border: none;
 				position: absolute;
 			}
+            #ystadegau {
+                float: right;
+                z-index: 100;
+                font-size: 0.9em;
+            }
+            #ystadegau table {
+                border-collapse: collapse;
+            }
+            #ystadegau th, #ystadegau td {
+                border: 1px solid #CCC;
+            }
+            #ystadegau th {
+                width: 6em;
+                font-weight: normal;
+            }
+            #ystadegau td {
+                padding-left: 1em;
+            }
         </style>
     </head>
     <body>
         <canvas id="canvas" width="500" height="500"></canvas>
+        <div id="ystadegau">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nifer endidau</th>
+                        <th>Nifer allan o'r sgrin</th>
+                        <th>Cyfartaledd cyflymder</th>
+                    </tr>
+                </thead>               
+                <tbody>
+                    <tr>
+                        <td id="niferEndidau"></td>
+                        <td id="niferAllanOrSgrin"></td>
+                        <td id="cyfartaleddCyflymder"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <script src="js/app.js"></script>
         <script>
             var app = new Bydysawd.App();

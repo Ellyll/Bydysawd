@@ -243,6 +243,9 @@ var Bydysawd;
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 lliniadydd.LluniaduEndidau(endidau);
                 //if (niferFframiau % 1000 === 0) console.log(`Nifer fframiau: ${niferFframiau}`, endidau.map(e => e.cyflymder.toString()));
+                if (niferFframiau % 60 === 0) {
+                    diweddaruYstadegau(endidau, canvas);
+                }
                 if (endidau.length > 0) {
                     const amserDiwethaf = amserRwan;
                     window.requestAnimationFrame((rwan) => lluniadu(rwan, amserDiwethaf, endidau));
@@ -319,6 +322,28 @@ var Bydysawd;
         const e1a = new Bydysawd.Endid(e1.lleoliad.x, e1.lleoliad.y, v1After.x, v1After.y, e1.radiws, e1.mas, e1.lliw);
         const e2a = new Bydysawd.Endid(e2.lleoliad.x, e2.lleoliad.y, v2After.x, v2After.y, e2.radiws, e2.mas, e2.lliw);
         return [e1a, e2a];
+    }
+    function diweddaruYstadegau(endidau, canvas) {
+        const niferEndidau = endidau.length;
+        const cyfartaleddCyflymder = endidau
+            .map(e => e.cyflymder.maint())
+            .reduce((cyfanswm, cyflymder) => cyfanswm += cyflymder, 0)
+            / niferEndidau;
+        const niferAllanOrSgrin = endidau.reduce((cyfanswm, e) => {
+            if (e.lleoliad.x < 0 || e.lleoliad.x >= canvas.width || e.lleoliad.y < 0 || e.lleoliad.y >= canvas.height) {
+                return cyfanswm + 1;
+            }
+            return cyfanswm;
+        }, 0);
+        dangosYstadegau(niferEndidau, cyfartaleddCyflymder, niferAllanOrSgrin);
+    }
+    function dangosYstadegau(niferEndidau, cyfartaleddCyflymder, niferAllanOrSgrin) {
+        const elNiferEndidau = document.getElementById('niferEndidau');
+        elNiferEndidau.innerText = niferEndidau.toString();
+        const elCyfartaleddCyflymder = document.getElementById('cyfartaleddCyflymder');
+        elCyfartaleddCyflymder.innerText = (Math.round(cyfartaleddCyflymder * 100) / 100).toString();
+        const elNiferAllanOrSgrin = document.getElementById('niferAllanOrSgrin');
+        elNiferAllanOrSgrin.innerText = niferAllanOrSgrin.toString();
     }
 })(Bydysawd || (Bydysawd = {}));
 var Bydysawd;
