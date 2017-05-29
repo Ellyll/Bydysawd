@@ -181,7 +181,7 @@ var Bydysawd;
     class CanfodyddGwrthdrawiadau {
         static YnGwrthdaro(endid, targed) {
             const pellter = endid.lleoliad.pellterI(targed.lleoliad);
-            return (endid.radiws + targed.radiws) > pellter;
+            return (endid.radiws + targed.radiws) >= pellter;
         }
     }
     Bydysawd.CanfodyddGwrthdrawiadau = CanfodyddGwrthdrawiadau;
@@ -254,29 +254,29 @@ var Bydysawd;
     Bydysawd.App = App;
     function diweddaru(context, endidauGwreiddiol, eiliadau) {
         let endidau = Bydysawd.Disgyrchiant.gweithreduDisgyrchiant(endidauGwreiddiol, eiliadau);
-        endidau = endidau
-            .map(e => {
-            const lleoliadNewydd = e.lleoliad.ychwanegu(e.cyflymder.lluosi(eiliadau));
-            const endidNewydd = e.gydaLleoliad(lleoliadNewydd);
-            if (endidau.every(e2 => e2 === e ? true : !Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e2, endidNewydd))) {
-                return endidNewydd;
-            }
-            return e;
-        })
-            .filter(e => e.lleoliad.x >= 0 && e.lleoliad.x < context.canvas.width && e.lleoliad.y >= 0 && e.lleoliad.y < context.canvas.height);
-        for (let i = 0; i < endidau.length - 1; i++) {
+        for (let i = 0; i < endidau.length; i++) {
             const e1 = endidau[i];
-            for (let j = i + 1; j < endidau.length; j++) {
-                const e2 = endidau[j];
-                if (Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2)) {
-                    //endidau[i] = e1.gydaLliw(Lliw.oHex("FF0000"));
-                    //endidau[j] = e2.gydaLliw(Lliw.oHex("FFFF00"));
-                    const endidauArOlGwrthdaro = gwrthdaro(endidau[i], endidau[j]);
+            const lleoliadNewydd = e1.lleoliad.ychwanegu(e1.cyflymder.lluosi(eiliadau));
+            const endidNewydd = e1.gydaLleoliad(lleoliadNewydd);
+            let wediGwrthdaro = false;
+            for (let j = 0; j < endidau.length; j++) {
+                if (j === i)
+                    continue;
+                let targed = endidau[j];
+                if (Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(endidNewydd, targed)) {
+                    const endidauArOlGwrthdaro = gwrthdaro(e1, targed);
                     endidau[i] = endidauArOlGwrthdaro[0];
                     endidau[j] = endidauArOlGwrthdaro[1];
+                    wediGwrthdaro = true;
+                    break;
                 }
             }
+            if (!wediGwrthdaro) {
+                endidau[i] = endidNewydd;
+            }
         }
+        endidau = endidau
+            .filter(e => e.lleoliad.x >= 0 && e.lleoliad.x < context.canvas.width && e.lleoliad.y >= 0 && e.lleoliad.y < context.canvas.height);
         return endidau;
     }
     function gwrthdaro(e1, e2) {
@@ -381,7 +381,7 @@ var Bydysawd;
         }
         static nolCyflymiad(e1, e2, eiliadau) {
             const cefndirol = 0.001;
-            const addaswrG = 10000000000;
+            const addaswrG = 10000000000; //10000000000;
             const G = 6.67408 * Math.pow(10, -11) * addaswrG;
             const pellter = e2.lleoliad.tynnu(e1.lleoliad);
             const rSgwar = pellter.maintSgwar();
@@ -407,24 +407,24 @@ var Bydysawd;
                 const radiws2 = 5;
                 const e1 = new Bydysawd.Endid(2, 2, 0, 0, radiws1, 1, Bydysawd.Lliw.oHex("FFFFFF"));
                 const e2 = new Bydysawd.Endid(2, 2 + radiws1, 0, 0, radiws2, 1, Bydysawd.Lliw.oHex("FFFFFF"));
-                const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
-                expect(gwir).toBeTruthy();
+                const gwerth = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
+                expect(gwerth).toBe(true);
             });
-            it("Dylai dychweld anwir os yw cyfanswm y ddau radiws yn hafal i'r pellter", () => {
+            it("Dylai dychweld gwir os yw cyfanswm y ddau radiws yn hafal i'r pellter", () => {
                 const radiws1 = 7;
                 const radiws2 = 5;
                 const e1 = new Bydysawd.Endid(2, 2, 0, 0, radiws1, 1, Bydysawd.Lliw.oHex("FFFFFF"));
                 const e2 = new Bydysawd.Endid(2, 2 + (radiws1 + radiws2), 0, 0, radiws2, 1, Bydysawd.Lliw.oHex("FFFFFF"));
-                const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
-                expect(gwir).toBeFalsy();
+                const gwerth = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
+                expect(gwerth).toBe(true);
             });
             it("Dylai dychweld anwir os yw cyfanswm y ddau radiws yn llai na'r pellter", () => {
                 const radiws1 = 7;
                 const radiws2 = 5;
                 const e1 = new Bydysawd.Endid(2, 2, 0, 0, radiws1, 1, Bydysawd.Lliw.oHex("FFFFFF"));
                 const e2 = new Bydysawd.Endid(2, 2 + (radiws1 + radiws2) + 1, 0, 0, radiws2, 1, Bydysawd.Lliw.oHex("FFFFFF"));
-                const gwir = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
-                expect(gwir).toBeFalsy();
+                const gwerth = Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e1, e2);
+                expect(gwerth).toBe(false);
             });
         });
     });

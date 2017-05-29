@@ -31,7 +31,7 @@ namespace Bydysawd {
 
         private static nolCyflymiad(e1 : Endid, e2 : Endid, eiliadau : number) : Fector2D {
             const cefndirol = 0.001;
-            const addaswrG = 10000000000;
+            const addaswrG = 10000000000; //10000000000;
             const G = 6.67408*Math.pow(10,-11) * addaswrG;
             const pellter = e2.lleoliad.tynnu(e1.lleoliad);                
             const rSgwar = pellter.maintSgwar();
