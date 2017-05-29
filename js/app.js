@@ -139,6 +139,7 @@ var Bydysawd;
         static CreuArHap(nifer, isafswmX, isafswmY, uchafswmX, uchafswmY, endidauPresenol = []) {
             if (nifer < 1)
                 return [];
+            const canol = new Bydysawd.Fector2D((isafswmX + uchafswmX) / 2, (isafswmY + uchafswmY) / 2);
             const endidau = endidauPresenol.slice();
             for (let i = 0; i < nifer; i++) {
                 let x;
@@ -146,11 +147,13 @@ var Bydysawd;
                 while (true) {
                     const x = FfatriEndidau.NolIntArHap(isafswmX, uchafswmX);
                     const y = FfatriEndidau.NolIntArHap(isafswmY, uchafswmY);
-                    const cyflymderX = FfatriEndidau.NolArHap(-10, 10);
-                    const cyflymderY = FfatriEndidau.NolArHap(-10, 10);
+                    const unedAtYCanol = canol.tynnu(new Bydysawd.Fector2D(x, y)).uned();
+                    const cyflymder = unedAtYCanol.lluosi(FfatriEndidau.NolArHap(0, 10));
+                    const cyflymderX = cyflymder.x; //FfatriEndidau.NolArHap(-10,10);
+                    const cyflymderY = cyflymder.y; // FfatriEndidau.NolArHap(-10,10);
                     const radiws = Bydysawd.CynhyrchyddGaussian.nolAmrediadInt(1, 15); //FfatriEndidau.NolIntArHap(1,15);
                     const cyfaint = (4 / 3) * Math.PI * Math.pow(radiws, 3); // V = 4/3 PI r^3
-                    const dwysedd = 1;
+                    const dwysedd = 5514; // y ddear yn 5514 kg/m^3
                     const mas = dwysedd * cyfaint; //150; //(5.97237*Math.pow(10,24));
                     const endidNewydd = new Bydysawd.Endid(x, y, cyflymderX, cyflymderY, radiws, mas, FfatriEndidau.NolLliwArHap());
                     if (endidau.every(e => !Bydysawd.CanfodyddGwrthdrawiadau.YnGwrthdaro(e, endidNewydd))) {
@@ -225,7 +228,7 @@ var Bydysawd;
             const xCanol = (canvas.width / 2) - 1;
             const yCanol = (canvas.height / 2) - 1;
             const endidCanol = Bydysawd.FfatriEndidau.CreuArHap(1, xCanol, xCanol, xCanol, yCanol);
-            const endidauCychwyn = Bydysawd.FfatriEndidau.CreuArHap(20, 0, 0, canvas.width - 1, canvas.height - 1);
+            const endidauCychwyn = Bydysawd.FfatriEndidau.CreuArHap(100, 0, 0, canvas.width - 1, canvas.height - 1);
             let amserHen = performance.now();
             let niferFframiau = 0;
             const lluniadu = (amserRwan, amserHen, endidau) => {
@@ -275,8 +278,10 @@ var Bydysawd;
                 endidau[i] = endidNewydd;
             }
         }
+        const lled = context.canvas.width;
+        const uchder = context.canvas.height;
         endidau = endidau
-            .filter(e => e.lleoliad.x >= 0 && e.lleoliad.x < context.canvas.width && e.lleoliad.y >= 0 && e.lleoliad.y < context.canvas.height);
+            .filter(e => e.lleoliad.x >= -lled && e.lleoliad.x < 2 * lled && e.lleoliad.y >= -uchder && e.lleoliad.y < 2 * uchder);
         return endidau;
     }
     function gwrthdaro(e1, e2) {
@@ -380,8 +385,8 @@ var Bydysawd;
             return endidauNewydd;
         }
         static nolCyflymiad(e1, e2, eiliadau) {
-            const cefndirol = 0.001;
-            const addaswrG = 10000000000; //10000000000;
+            const cefndirol = 0; //0.001;
+            const addaswrG = 1000000; //1000000000; //10000000000;
             const G = 6.67408 * Math.pow(10, -11) * addaswrG;
             const pellter = e2.lleoliad.tynnu(e1.lleoliad);
             const rSgwar = pellter.maintSgwar();

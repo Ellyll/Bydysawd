@@ -17,7 +17,7 @@ namespace Bydysawd {
             const yCanol = (canvas.height/2)-1;
 
             const endidCanol = FfatriEndidau.CreuArHap(1, xCanol, xCanol, xCanol, yCanol);
-            const endidauCychwyn = FfatriEndidau.CreuArHap(20, 0, 0, canvas.width-1, canvas.height-1);
+            const endidauCychwyn = FfatriEndidau.CreuArHap(100, 0, 0, canvas.width-1, canvas.height-1);
 
             let amserHen = performance.now();
             let niferFframiau = 0;
@@ -73,9 +73,11 @@ namespace Bydysawd {
             }
         }
 
+        const lled = context.canvas.width;
+        const uchder = context.canvas.height;
         endidau = endidau
-            // Gwaredu endidau sydd allan o ffiniau
-            .filter(e => e.lleoliad.x >= 0 && e.lleoliad.x < context.canvas.width && e.lleoliad.y >= 0 && e.lleoliad.y < context.canvas.height);
+            // Gwaredu endidau sydd wedi mynd yn bell i ffwrdd
+            .filter(e => e.lleoliad.x >= -lled && e.lleoliad.x < 2*lled && e.lleoliad.y >= -uchder && e.lleoliad.y < 2*uchder);
 
         return endidau;
     }
