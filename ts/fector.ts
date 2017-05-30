@@ -13,7 +13,7 @@ namespace Bydysawd {
         get length() : number { return 2; }
 
         toString() : string {
-            return `(${this.x},${this.y})`;
+            return `(${Math.round(this.x*100)/100},${Math.round(this.y*100)/100})`;
         }
 
         // Dot product

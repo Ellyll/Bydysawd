@@ -155,10 +155,10 @@ namespace Bydysawd {
 
         const endidIGwylio = endidau.find( e => e.ad === adEndidIGwylio);        
 
-        dangosYstadegau(niferEndidau, cyfartaleddCyflymder, niferAllanOrSgrin);
+        dangosYstadegau(niferEndidau, cyfartaleddCyflymder, niferAllanOrSgrin, endidIGwylio);
     }
 
-    function dangosYstadegau(niferEndidau: number, cyfartaleddCyflymder: number, niferAllanOrSgrin: number) {
+    function dangosYstadegau(niferEndidau: number, cyfartaleddCyflymder: number, niferAllanOrSgrin: number, endidIGwylio : Endid) {
         const elNiferEndidau = document.getElementById('niferEndidau');
         elNiferEndidau.innerText = niferEndidau.toString();
 
@@ -168,5 +168,21 @@ namespace Bydysawd {
         const elNiferAllanOrSgrin = document.getElementById('niferAllanOrSgrin');
         elNiferAllanOrSgrin.innerText = niferAllanOrSgrin.toString();
 
+        const elYstadegauEndid = document.getElementById('ystadegauEndid');
+        if (typeof endidIGwylio === 'undefined' || endidIGwylio === null) {
+            elYstadegauEndid.classList.add("cuddiad");
+        } else {
+            const elAd = document.getElementById('endid_ad');
+            const elLleoliad = document.getElementById('endid_lleoliad');
+            const elCyflymder = document.getElementById('endid_cyflymder');
+            const elMas = document.getElementById('endid_mas');
+            const elRadiws = document.getElementById('endid_radiws');
+            elAd.innerText = endidIGwylio.ad;
+            elLleoliad.innerText = endidIGwylio.lleoliad.toString();
+            elCyflymder.innerText = endidIGwylio.cyflymder.toString();
+            elMas.innerText = (Math.round(endidIGwylio.mas*100)/100).toString();
+            elRadiws.innerText = (Math.round(endidIGwylio.radiws*100)/100).toString();
+            elYstadegauEndid.classList.remove("cuddiad");
+        }
     }
 }

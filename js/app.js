@@ -10,7 +10,7 @@ var Bydysawd;
         get y() { return this._data[1]; }
         get length() { return 2; }
         toString() {
-            return `(${this.x},${this.y})`;
+            return `(${Math.round(this.x * 100) / 100},${Math.round(this.y * 100) / 100})`;
         }
         // Dot product
         dot(fector) {
@@ -347,15 +347,32 @@ var Bydysawd;
             return cyfanswm;
         }, 0);
         const endidIGwylio = endidau.find(e => e.ad === adEndidIGwylio);
-        dangosYstadegau(niferEndidau, cyfartaleddCyflymder, niferAllanOrSgrin);
+        dangosYstadegau(niferEndidau, cyfartaleddCyflymder, niferAllanOrSgrin, endidIGwylio);
     }
-    function dangosYstadegau(niferEndidau, cyfartaleddCyflymder, niferAllanOrSgrin) {
+    function dangosYstadegau(niferEndidau, cyfartaleddCyflymder, niferAllanOrSgrin, endidIGwylio) {
         const elNiferEndidau = document.getElementById('niferEndidau');
         elNiferEndidau.innerText = niferEndidau.toString();
         const elCyfartaleddCyflymder = document.getElementById('cyfartaleddCyflymder');
         elCyfartaleddCyflymder.innerText = (Math.round(cyfartaleddCyflymder * 100) / 100).toString();
         const elNiferAllanOrSgrin = document.getElementById('niferAllanOrSgrin');
         elNiferAllanOrSgrin.innerText = niferAllanOrSgrin.toString();
+        const elYstadegauEndid = document.getElementById('ystadegauEndid');
+        if (typeof endidIGwylio === 'undefined' || endidIGwylio === null) {
+            elYstadegauEndid.classList.add("cuddiad");
+        }
+        else {
+            const elAd = document.getElementById('endid_ad');
+            const elLleoliad = document.getElementById('endid_lleoliad');
+            const elCyflymder = document.getElementById('endid_cyflymder');
+            const elMas = document.getElementById('endid_mas');
+            const elRadiws = document.getElementById('endid_radiws');
+            elAd.innerText = endidIGwylio.ad;
+            elLleoliad.innerText = endidIGwylio.lleoliad.toString();
+            elCyflymder.innerText = endidIGwylio.cyflymder.toString();
+            elMas.innerText = (Math.round(endidIGwylio.mas * 100) / 100).toString();
+            elRadiws.innerText = (Math.round(endidIGwylio.radiws * 100) / 100).toString();
+            elYstadegauEndid.classList.remove("cuddiad");
+        }
     }
 })(Bydysawd || (Bydysawd = {}));
 var Bydysawd;
