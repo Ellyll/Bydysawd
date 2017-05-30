@@ -7,7 +7,7 @@ namespace Bydysawd {
         cychwyn() {
             const canvas = <HTMLCanvasElement>document.getElementById("canvas");
             const context = canvas.getContext("2d");
-            const lliniadydd = new Lliniadydd(context);
+            const lliniadydd = new Lliniadydd(context);            
 
             // Gosod y canvas i'r maint mwyaf bosib
             canvas.height = window.innerHeight;
@@ -18,10 +18,19 @@ namespace Bydysawd {
 
             const endidCanol = FfatriEndidau.CreuArHap(1, xCanol, xCanol, xCanol, yCanol);
             const endidauCychwyn = FfatriEndidau.CreuArHap(100, 0, 0, canvas.width-1, canvas.height-1);
+            let endidau : Endid[] = endidCanol.concat(endidauCychwyn);
+            let adEndidIGwylio : string = null;
 
-            let amserHen = performance.now();
-            let niferFframiau = 0;
-            const lluniadu = (amserRwan, amserHen, endidau) => {
+            canvas.addEventListener("click", (evt) => {
+                const lleoliadClic = new Fector2D(evt.x, evt.y);
+                const endid = endidau.find( e => e.lleoliad.pellterI(lleoliadClic) <= e.radiws);
+
+                adEndidIGwylio = endid ? endid.ad : null;
+                console.log('clic', evt.x, evt.y, endid, adEndidIGwylio);
+            });
+
+            let niferFframiau = 0;            
+            const lluniadu = (amserRwan, amserHen) => {
                 niferFframiau++;
                 let gwahaniaeth = amserRwan - amserHen;
 
@@ -36,17 +45,17 @@ namespace Bydysawd {
                 lliniadydd.LluniaduEndidau(endidau);
                 //if (niferFframiau % 1000 === 0) console.log(`Nifer fframiau: ${niferFframiau}`, endidau.map(e => e.cyflymder.toString()));
                 if (niferFframiau % 60 === 0) {
-                    diweddaruYstadegau(endidau, canvas);
+                    diweddaruYstadegau(endidau, canvas, adEndidIGwylio);
                 }
                 if (endidau.length > 0) {
                     const amserDiwethaf = amserRwan;
-                    window.requestAnimationFrame((rwan) => lluniadu(rwan, amserDiwethaf, endidau));
+                    window.requestAnimationFrame((rwan) => lluniadu(rwan, amserDiwethaf));
                 } else {
                     console.log("Wedi gorffen");
                 }                
             };            
 
-            window.requestAnimationFrame((rwan) => lluniadu(rwan, performance.now(), endidauCychwyn));
+            window.requestAnimationFrame((rwan) => lluniadu(rwan, performance.now()));
         }
     }
 
@@ -126,12 +135,12 @@ namespace Bydysawd {
         const v2After = v2nAfterFector.ychwanegu(v2tAfterFector);
 
         // Creu pwyntiau newydd
-        const e1a = new Endid(e1.lleoliad.x, e1.lleoliad.y, v1After.x, v1After.y, e1.radiws, e1.mas, e1.lliw);
-        const e2a = new Endid(e2.lleoliad.x, e2.lleoliad.y, v2After.x, v2After.y, e2.radiws, e2.mas, e2.lliw);
+        const e1a = new Endid(e1.ad, e1.lleoliad.x, e1.lleoliad.y, v1After.x, v1After.y, e1.radiws, e1.mas, e1.lliw);
+        const e2a = new Endid(e2.ad, e2.lleoliad.x, e2.lleoliad.y, v2After.x, v2After.y, e2.radiws, e2.mas, e2.lliw);
         return [ e1a, e2a ];
     }
 
-    function diweddaruYstadegau(endidau : Endid[], canvas: HTMLCanvasElement) {
+    function diweddaruYstadegau(endidau : Endid[], canvas: HTMLCanvasElement, adEndidIGwylio : string) {
         const niferEndidau = endidau.length;
         const cyfartaleddCyflymder = endidau
             .map(e => e.cyflymder.maint())
@@ -143,6 +152,9 @@ namespace Bydysawd {
             }
             return cyfanswm;
         }, 0);
+
+        const endidIGwylio = endidau.find( e => e.ad === adEndidIGwylio);        
+
         dangosYstadegau(niferEndidau, cyfartaleddCyflymder, niferAllanOrSgrin);
     }
 

@@ -2,6 +2,8 @@
 
 namespace Bydysawd {
     export class FfatriEndidau {
+        private static _rhifNesaf = 1;
+
         static CreuArHap(nifer: number, isafswmX: number, isafswmY: number, uchafswmX: number, uchafswmY: number, endidauPresenol : Endid[] = []) : Endid[] {
             if (nifer < 1) return [];
 
@@ -12,6 +14,8 @@ namespace Bydysawd {
                 let x: number;
                 let y: number;
                 while(true) {
+                    const ad = `e${FfatriEndidau._rhifNesaf}`;
+                    FfatriEndidau._rhifNesaf++;
                     const x = FfatriEndidau.NolIntArHap(isafswmX, uchafswmX);
                     const y = FfatriEndidau.NolIntArHap(isafswmY, uchafswmY);
                     const unedAtYCanol = canol.tynnu(new Fector2D(x,y)).uned();
@@ -21,8 +25,8 @@ namespace Bydysawd {
                     const radiws = CynhyrchyddGaussian.nolAmrediadInt(1,15); //FfatriEndidau.NolIntArHap(1,15);
                     const cyfaint = (4/3)*Math.PI*Math.pow(radiws, 3); // V = 4/3 PI r^3
                     const dwysedd = 5514; // y ddear yn 5514 kg/m^3
-                    const mas = dwysedd * cyfaint; //150; //(5.97237*Math.pow(10,24));
-                    const endidNewydd = new Endid(x, y, cyflymderX, cyflymderY, radiws, mas, FfatriEndidau.NolLliwArHap());
+                    const mas = dwysedd * cyfaint; //150; //(5.97237*Math.pow(10,24));                    
+                    const endidNewydd = new Endid(ad, x, y, cyflymderX, cyflymderY, radiws, mas, FfatriEndidau.NolLliwArHap());
                     if (endidau.every(e => !CanfodyddGwrthdrawiadau.YnGwrthdaro(e, endidNewydd))) {
                         endidau.push(endidNewydd);
                         break;
